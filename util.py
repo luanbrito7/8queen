@@ -1,3 +1,5 @@
+import random
+
 def binary_to_decimal(val):
   return int(val, 2)
 
@@ -38,3 +40,35 @@ def get_fitness(genotype):
     total_penality += get_penality(genotype, i)
   return 1/(1+total_penality)
 
+def get_random_point():
+  return random.randint(0, 7) * 3
+
+def crossover_cut_and_crossfill(parent1, parent2):
+  cut_point = get_random_point()
+  # copy first part of parents to childs
+  child1 = parent1[0:cut_point]
+  child2 = parent2[0:cut_point]
+  c1_elements, c2_elements = {}, {}
+  # these dicts will track which elements are in each child
+  for i in range(0, cut_point, 3):
+    c1_elements[binary_to_decimal(child1[i:i+3])] = True
+    c2_elements[binary_to_decimal(child2[i:i+3])] = True
+  # fulfill childs with other parent's genotype
+  # from cut point to end of parent
+  for i in range(cut_point, len(parent1), 3):
+    if binary_to_decimal(parent2[i:i+3]) not in c1_elements:
+      child1 += parent2[i:i+3]
+      c1_elements[binary_to_decimal(parent2[i:i+3])] = True
+    if binary_to_decimal(parent1[i:i+3]) not in c2_elements:
+      child2 += parent1[i:i+3]
+      c2_elements[binary_to_decimal(parent1[i:i+3])] = True
+  # fulfill childs with other parent's genotype
+  # from start to cut point (remaining values)
+  for i in range(0, cut_point, 3):
+    if binary_to_decimal(parent2[i:i+3]) not in c1_elements:
+      child1 += parent2[i:i+3]
+      c1_elements[binary_to_decimal(parent2[i:i+3])] = True
+    if binary_to_decimal(parent1[i:i+3]) not in c2_elements:
+      child2 += parent1[i:i+3]
+      c2_elements[binary_to_decimal(parent1[i:i+3])] = True
+  return [child1, child2]
