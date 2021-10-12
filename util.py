@@ -6,12 +6,6 @@ def diagonal_cross(q1_row, q1_col, q2_row, q2_col):
   col_vec = q1_col - q2_col
   return abs(row_vec) == abs(col_vec)
 
-def get_fitness(genotype):
-  total_penality = 0
-  for i in range(0, len(genotype), 3):
-    total_penality += get_penality(genotype, i)
-  return 1/(1+total_penality)
-
 def get_penality(genotype, queen_index):
   penality = 0
   queen_row = binary_to_decimal(genotype[queen_index:queen_index+3])
@@ -28,4 +22,10 @@ def get_penality(genotype, queen_index):
       elif diagonal_cross(queen_row, queen_column, neib_queen_row, neib_queen_column):
         penality += 1
   return penality
+
+def get_fitness(genotype):
+  total_penality = 0
+  for i in range(0, len(genotype), 3):
+    total_penality += get_penality(genotype, i)
+  return 1/(1+total_penality)
 
