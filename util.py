@@ -3,6 +3,9 @@ import random
 def binary_to_decimal(val):
   return int(val, 2)
 
+def dec_to_bin(x):
+  return int(bin(x)[2:]) 
+
 def diagonal_cross(q1_row, q1_col, q2_row, q2_col):
   row_vec = q1_row - q2_row
   col_vec = q1_col - q2_col
@@ -72,3 +75,12 @@ def crossover_cut_and_crossfill(parent1, parent2):
       child2 += parent1[i:i+3]
       c2_elements[binary_to_decimal(parent1[i:i+3])] = True
   return [child1, child2]
+
+def generate_valid_genotype():
+  genotype = ''
+  for _ in range(8):
+    row_value = str(dec_to_bin(random.randint(0, 7)))
+    while len(row_value) < 3:
+      row_value = '0' + row_value
+    genotype += row_value
+  return genotype
