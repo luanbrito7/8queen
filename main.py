@@ -5,8 +5,11 @@ def main():
   population = []
   for _ in range(100):
     population.append(util.generate_valid_genotype())
-  print(population)
-
+  iterations = 0
+  [g,f] = util.highest_fitness(population)
+  print(g,f)
+  #while(util.solution_found(population) or iterations > 10000):
+  #  iterations += 1
 
 if __name__ == "__main__":
   main()

@@ -43,6 +43,21 @@ def get_fitness(genotype):
     total_penality += get_penality(genotype, i)
   return 1/(1+total_penality)
 
+def solution_found(population):
+  for p in population:
+    if get_fitness(p) == 1.0:
+      return p
+  return False
+
+def highest_fitness(population):
+  found, fitness = "", 0
+  for p in population:
+    actual_fit = get_fitness(p)
+    if actual_fit > fitness:
+      fitness = actual_fit
+      found = p
+  return [found, fitness]
+
 def get_random_point():
   return random.randint(0, 7) * 3
 
