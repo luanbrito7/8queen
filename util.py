@@ -46,7 +46,7 @@ def get_fitness(genotype):
 def solution_found(population):
   for p in population:
     if get_fitness(p) == 1.0:
-      return p
+      return True
   return False
 
 def highest_fitness(population):
@@ -57,6 +57,15 @@ def highest_fitness(population):
       fitness = actual_fit
       found = p
   return [found, fitness]
+
+def smallest_fitness(population):
+  index, fitness = -1, 1
+  for i in range(len(population)):
+    actual_fit = get_fitness(population[i])
+    if actual_fit <= fitness:
+      fitness = actual_fit
+      index = i
+  return [index, fitness]
 
 def get_random_point():
   return random.randint(0, 7) * 3
@@ -99,3 +108,33 @@ def generate_valid_genotype():
       row_value = '0' + row_value
     genotype += row_value
   return genotype
+
+def mutation_switch_genes(genotype):
+  switch_points = random.sample(range(8),2)
+  switch_points = [x*3 for x in switch_points]
+  helper = genotype[switch_points[0]:switch_points[0]+3]
+  genotype[switch_points[0]:switch_points[0]+3] = genotype[switch_points[1]:switch_points[1]+3]
+  genotype[switch_points[1]:switch_points[1]+3] = helper
+
+  return genotype 
+
+def mutation_invert_bit(genotype):
+  invert_point = get_random_point()
+  if(genotype[invert_point] == '1'):
+    genotype[invert_point] = '0'
+  else:
+    genotype[invert_point] = '1'
+  
+  return genotype
+
+def best_two_of_random_five(population):
+  chosen_ones = random.sample(range(len(population)),5)
+  randon_five = []
+  for i in chosen_ones:
+    randon_five.append(population[i])
+  
+  parent1 = highest_fitness(randon_five)
+  randon_five.pop(randon_five.index(parent1[0]))
+  parent2 = highest_fitness(randon_five)
+
+  return[parent1[0],parent2[0]]
