@@ -102,11 +102,14 @@ def crossover_cut_and_crossfill(parent1, parent2):
 
 def generate_valid_genotype():
   genotype = ''
+  options = list(range(8))
   for _ in range(8):
-    row_value = str(dec_to_bin(random.randint(0, 7)))
+    value = random.choice(options)
+    row_value = str(dec_to_bin(value))
     while len(row_value) < 3:
       row_value = '0' + row_value
     genotype += row_value
+    options.remove(value)
   return genotype
 
 def mutation_switch_genes(genotype):
