@@ -14,7 +14,7 @@ def main():
     if(crossover_prob <= 0.9):
       parents = util.best_two_of_random_five(population)
       childs = util.crossover_cut_and_crossfill(parents[0],parents[1])
-      population.append(childs)
+      population.extend(childs)
     #Mutation
     mutation_prob = random.random()
     if(mutation_prob <= 0.4):
@@ -29,6 +29,7 @@ def main():
     iterations += 1
   
   print('Best Answer: ', util.highest_fitness(population))
+  print("Generations computed: ", iterations)
 
 if __name__ == "__main__":
   main()

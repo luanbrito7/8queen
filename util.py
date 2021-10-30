@@ -13,7 +13,7 @@ def diagonal_cross(q1_row, q1_col, q2_row, q2_col):
 
 def get_penality(genotype, queen_index):
   penality = 0
-  # our representation assumes that 2 queens can't be in the same column
+  # our representation assumes that 2 queens can't be in the same column or row
   # so the column of a queen is represented by it's genotype relative index (index/3)
   # and the row value is represented by value genotype[index:index+3]
   queen_row = binary_to_decimal(genotype[queen_index:queen_index+3])
@@ -29,9 +29,7 @@ def get_penality(genotype, queen_index):
     else:
       # we don't verify if there is a column collision because
       # in our representation each queen is in one specific column
-      if queen_row == neib_queen_row:
-        penality += 1
-      elif diagonal_cross(queen_row, queen_column, neib_queen_row, neib_queen_column):
+      if diagonal_cross(queen_row, queen_column, neib_queen_row, neib_queen_column):
         penality += 1
   return penality
 
@@ -115,11 +113,14 @@ def generate_valid_genotype():
 def mutation_switch_genes(genotype):
   switch_points = random.sample(range(8),2)
   switch_points = [x*3 for x in switch_points]
-  helper = genotype[switch_points[0]:switch_points[0]+3]
-  genotype[switch_points[0]:switch_points[0]+3] = genotype[switch_points[1]:switch_points[1]+3]
-  genotype[switch_points[1]:switch_points[1]+3] = helper
+  switch_points.sort()
 
-  return genotype 
+  new_gen = genotype[0:switch_points[0]]
+  new_gen += genotype[switch_points[1]:switch_points[1]+3]
+  new_gen += genotype[switch_points[0]+3:switch_points[1]]
+  new_gen += genotype[switch_points[0]:switch_points[0]+3]
+  new_gen += genotype[switch_points[1]+3:]
+  return new_gen 
 
 def mutation_invert_bit(genotype):
   invert_point = get_random_point()
