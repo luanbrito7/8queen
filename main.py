@@ -1,8 +1,8 @@
 import random
 import util
+import math
 
-def main():
-  print("=== running 8queen ===")
+def run_evolution():
   population = []
   for _ in range(100):
     population.append(util.generate_valid_genotype())
@@ -25,11 +25,32 @@ def main():
     #Selection
     for _ in range(len(population)-100):
       population.pop(util.smallest_fitness(population)[0])
-
     iterations += 1
-  
-  print('Best Answer: ', util.highest_fitness(population))
-  print("Generations computed: ", iterations)
+  return [util.highest_fitness(population)[1] == 1.0, iterations]
+
+def dp(iterations, mean):
+  _sum = 0
+  for i in iterations:
+    _sum += pow((i - mean), 2)
+  return math.sqrt(_sum/len(iterations))
+
+def avaliate(iterations):
+  total_generations = []
+  converged_iterations = 0
+  for _ in range(iterations):
+    [converged, generations] = run_evolution()
+    total_generations.append(generations)
+    if converged:
+      converged_iterations += 1
+  mean = sum(total_generations) / iterations
+  res_dp = dp(total_generations, mean)
+  print("Mean: ", mean)
+  print("DP: ", res_dp)
+  print("Converged in %", converged_iterations/iterations)
+
+
+def main():
+  avaliate(3)
 
 if __name__ == "__main__":
   main()
