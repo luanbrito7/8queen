@@ -56,6 +56,20 @@ def highest_fitness(population):
       found = p
   return [found, fitness]
 
+def converged_number(population):
+  total = 0
+  for p in population:
+    actual_fit = get_fitness(p)
+    if actual_fit == 1.0:
+      total += 1
+  return total
+
+def average_fitness(population):
+  total = 0
+  for p in population:
+    total += get_fitness(p)
+  return total/len(population)
+
 def smallest_fitness(population):
   index, fitness = -1, 1
   for i in range(len(population)):

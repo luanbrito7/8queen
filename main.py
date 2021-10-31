@@ -26,7 +26,11 @@ def run_evolution():
     for _ in range(len(population)-100):
       population.pop(util.smallest_fitness(population)[0])
     iterations += 1
-  return [util.highest_fitness(population)[1] == 1.0, iterations]
+  return {
+    "iterations": iterations,
+    "converged_number": util.converged_number(population),
+    "average_fitness": util.average_fitness(population)
+  }
 
 def dp(iterations, mean):
   _sum = 0
@@ -37,20 +41,25 @@ def dp(iterations, mean):
 def avaliate(iterations):
   total_generations = []
   converged_iterations = 0
-  for _ in range(iterations):
-    [converged, generations] = run_evolution()
+  for i in range(iterations):
+    res = run_evolution()
+    generations = res["iterations"]
+    converged_number = res["converged_number"]
+    average_fitness = res["average_fitness"]
+    print("Average fitness of ", i, " Iteration is: ", average_fitness)
+    print("Number of individuals converged in ", i, " Iteration is: ", converged_number)
     total_generations.append(generations)
-    if converged:
+    if converged_number > 0:
       converged_iterations += 1
   mean = sum(total_generations) / iterations
   res_dp = dp(total_generations, mean)
-  print("Mean: ", mean)
-  print("DP: ", res_dp)
+  print("Generations mean: ", mean)
+  print("Generations DP: ", res_dp)
   print("Converged in %", converged_iterations/iterations)
 
 
 def main():
-  avaliate(3)
+  avaliate(30)
 
 if __name__ == "__main__":
   main()
