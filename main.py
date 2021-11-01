@@ -1,6 +1,8 @@
 import random
 import util
 import math
+import matplotlib.pyplot as plt
+import numpy as np
 
 def run_evolution():
   population = []
@@ -40,14 +42,17 @@ def dp(iterations, mean):
 
 def avaliate(iterations):
   total_generations = []
+  average_fitness = []
   converged_iterations = 0
   for i in range(iterations):
     res = run_evolution()
     generations = res["iterations"]
     converged_number = res["converged_number"]
-    average_fitness = res["average_fitness"]
-    print("Average fitness of ", i, " Iteration is: ", average_fitness)
-    print("Number of individuals converged in ", i, " Iteration is: ", converged_number)
+    a_f= res["average_fitness"]
+    average_fitness.append(a_f)
+    print("Iteration: ", i + 1)
+    print("Average fitness: ", a_f)
+    print("Number of individuals converged: ", converged_number)
     total_generations.append(generations)
     if converged_number > 0:
       converged_iterations += 1
@@ -56,6 +61,11 @@ def avaliate(iterations):
   print("Generations mean: ", mean)
   print("Generations DP: ", res_dp)
   print("Converged in %", converged_iterations/iterations)
+  x = np.arange(iterations)
+  plt.bar(x, height=average_fitness)
+  plt.xticks(x, list(range(iterations)))
+  plt.show()
+
 
 
 def main():
