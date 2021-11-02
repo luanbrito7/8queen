@@ -112,6 +112,38 @@ def crossover_cut_and_crossfill(parent1, parent2):
       c2_elements[binary_to_decimal(parent1[i:i+3])] = True
   return [child1, child2]
 
+def crossover_order1(parent1, parent2):
+  slice_range = random.sample(range(8),2)
+  slice_range = [x*3 for x in slice_range]
+  slice_range.sort()
+
+  child1 = parent1[slice_range[0]:slice_range[1]+3]
+  child1 = [child1[i:i+3] for i in range(0,len(child1),3)]                         
+  child2 = parent2[slice_range[0]:slice_range[1]+3]
+  child2 = [child2[i:i+3] for i in range(0,len(child2),3)]
+  gen_list_p2 = parent2[slice_range[1]+3:] + parent2[0:slice_range[1]+3]
+  gen_list_p1 = parent1[slice_range[1]+3:] + parent1[0:slice_range[1]+3]
+
+  gen_pos_count1 = 8 - ((slice_range[1]+3)/3)
+  gen_pos_count2 = gen_pos_count1
+
+  for gen in range(8):
+    if len(child2) < 8 and (gen_list_p1[(gen*3):(gen*3)+3] not in child2):
+      if gen_pos_count2 > 0:
+        child2.append(gen_list_p1[(gen*3):(gen*3)+3])
+        gen_pos_count2 -= 1
+      else:
+        child2.insert(0,gen_list_p1[(gen*3):(gen*3)+3])
+    
+    if len(child1) < 8 and (gen_list_p2[(gen*3):(gen*3)+3] not in child1):
+      if gen_pos_count1 > 0:
+        child1.append(gen_list_p2[(gen*3):(gen*3)+3])
+        gen_pos_count1 -= 1
+      else:
+        child1.insert(0,gen_list_p2[(gen*3):(gen*3)+3])
+
+  return [''.join(child1),''.join(child2)]
+
 def generate_valid_genotype():
   genotype = ''
   options = list(range(8))
@@ -136,14 +168,40 @@ def mutation_switch_genes(genotype):
   new_gen += genotype[switch_points[1]+3:]
   return new_gen 
 
-def mutation_invert_bit(genotype):
-  invert_point = get_random_point()
-  if(genotype[invert_point] == '1'):
-    genotype[invert_point] = '0'
-  else:
-    genotype[invert_point] = '1'
+def mutation_pertubation(genotype):
+  perturbation_range = random.sample(range(8),2)
+  perturbation_range = [x*3 for x in perturbation_range]
+  perturbation_range.sort()
+
+  range_slice = genotype[perturbation_range[0]:perturbation_range[1]+3]
+  num_genes = int(len(range_slice)/3)
+  perturbation_pos = random.sample(range(num_genes),num_genes)
+  perturbation = [None]*(num_genes*3)
+  for gen in range(num_genes):
+    for x in range(3):
+      perturbation[(perturbation_pos[gen]*3)+x] = range_slice[(gen*3)+x]
   
-  return genotype
+  new_gen = genotype[0:perturbation_range[0]]
+  new_gen += ''.join(perturbation)
+  new_gen += genotype[perturbation_range[1]+3:]
+  return new_gen
+
+def mutation_inversion(genotype):
+  inversion_range = random.sample(range(8),2)
+  inversion_range = [x*3 for x in inversion_range]
+  inversion_range.sort()
+
+  range_slice = genotype[inversion_range[0]:inversion_range[1]+3]
+  num_genes = int(len(range_slice)/3)
+  inversion = ''
+  for gen in range(num_genes):
+    for x in range(3):
+      inversion += range_slice[((num_genes-(gen+1))*3)+x]
+  
+  new_gen = genotype[0:inversion_range[0]]
+  new_gen += inversion
+  new_gen += genotype[inversion_range[1]+3:]
+  return new_gen
 
 def best_two_of_random_five(population):
   chosen_ones = random.sample(range(len(population)),5)

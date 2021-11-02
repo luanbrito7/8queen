@@ -15,14 +15,14 @@ def run_evolution():
     crossover_prob = random.random()
     if(crossover_prob <= 0.9):
       parents = util.best_two_of_random_five(population)
-      childs = util.crossover_cut_and_crossfill(parents[0],parents[1])
+      childs = util.crossover_order1(parents[0],parents[1])
       population.extend(childs)
     #Mutation
     mutation_prob = random.random()
     if(mutation_prob <= 0.4):
       chosen_index = random.randint(0,len(population)-1)
       chosen_one = population.pop(chosen_index)
-      chosen_one = util.mutation_switch_genes(chosen_one)
+      chosen_one = util.mutation_inversion(chosen_one)
       population.append(chosen_one)
     #Selection
     for _ in range(len(population)-100):
