@@ -214,3 +214,36 @@ def best_two_of_random_five(population):
   parent2 = highest_fitness(randon_five)
 
   return[parent1[0],parent2[0]]
+
+def best_two_of_random_ten(population):
+  chosen_ones = random.sample(range(len(population)),10)
+  randon_ten = []
+  for i in chosen_ones:
+    randon_ten.append(population[i])
+  
+  parent1 = highest_fitness(randon_ten)
+  randon_ten.pop(randon_ten.index(parent1[0]))
+  parent2 = highest_fitness(randon_ten)
+
+  return[parent1[0],parent2[0]]
+
+def best_two(population):
+  parent1 = highest_fitness(population)
+  population.pop(population.index(parent1[0]))
+  parent2 = highest_fitness(population)
+
+  return[parent1[0],parent2[0]]
+
+def random_two(population):
+  chosen_ones = random.sample(range(len(population)),2)
+  parents = []
+  for i in chosen_ones:
+    parents.append(population[i])
+  
+  return[parents[0],parents[1]]
+
+def elitist_selection(population):
+  for _ in range(len(population)-50):
+      population.pop(smallest_fitness(population)[0])
+  
+  return population

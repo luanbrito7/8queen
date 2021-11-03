@@ -6,7 +6,7 @@ import numpy as np
 
 def run_evolution():
   population = []
-  for _ in range(100):
+  for _ in range(50):
     population.append(util.generate_valid_genotype())
   iterations = 0
   [g,f] = util.highest_fitness(population)
@@ -25,8 +25,7 @@ def run_evolution():
       chosen_one = util.mutation_inversion(chosen_one)
       population.append(chosen_one)
     #Selection
-    for _ in range(len(population)-100):
-      population.pop(util.smallest_fitness(population)[0])
+    population = util.elitist_selection(population)
     iterations += 1
   return {
     "iterations": iterations,
